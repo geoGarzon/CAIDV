@@ -1,0 +1,72 @@
+<?php
+
+
+	include_once("../clases/cls_cronogramacaidv.php");
+	//require_once("menu_principal.php");
+	//require_once("encabezado.php");
+	require_once("../clases/clsFuncionesGlobales.php");
+	$loFuncion = new clsFunciones;
+	$lobj_Calendariocaidv= new cls_cronogramacaidv();
+	//$lobj_Calendariocaidv->Cargar('tagenda'); //el numero 1 corresponde al tipo de Agenda, en este caso Diocesana
+	
+	}
+
+	
+			
+	echo utf8_Decode('
+	<link href="Calendario/css/fullcalendar.css" rel="stylesheet" />
+	<link href="Calendario/css/fullcalendar.print.css" rel="stylesheet" media="print" />
+	<script src="Calendario/javascript/jquery.min.js"></script>
+	<script src="Calendario/javascript/jquery-ui.custom.min.js"></script>
+	<script src="Calendario/javascript/fullcalendar.js"></script>
+	<script>
+	anoACargar='.$ano.';
+	mesACargar='.$mes.';
+	superWidth=\'127px\';
+	superHeight=\'108px\';
+	$(document).ready(function() {
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+
+		$(\'#calendar\').fullCalendar({
+			theme: true,
+			header: {
+				left: \'prev,next today\',
+				center: \'title\',
+				rigth: \'gotoDate\'
+			},
+			editable: true,
+			events: [');
+
+		$lobj_Calendario->Cargar();
+		
+	
+		
+		
+echo utf8_Decode('
+<html>
+<body>			
+					<div Cabecera>
+						<p>Agenda CAIDV</p>
+					</div>
+					<div class="formulario" >
+						<form method="POST" name="fr_cronograma" id="fr_cronograma"
+					<div>
+					echo "aa_Eventos[$lii]["Codigo"]=$la_Tupla["codigoAgenda"];";
+					</div>
+	');
+	footer(); // pie de pagina
+	echo utf8_decode('
+</div>
+
+</body>
+
+
+
+</html>
+'); 
+
+
+?>
