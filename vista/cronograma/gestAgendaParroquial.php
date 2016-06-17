@@ -600,16 +600,15 @@ var loF=document.fr_agenda;
 			if(validarEmp()){
 				
 			}			
-			/*if (vInvalido==0)
+			if (vInvalido==0)
 			{
 				lbValido=true;
-			}*/
+			}
 
 		return lbValido;
 	}
 
 	function validarEmp(){
-		validar = true;
 		for(let x = 0; x < events.length; x++){
 			let org = document.getElementsByName(\'Organizacion\')[0].value;
 			let per_emp = document.getElementsByName(\'PersonaEncargada\')[0].value;
@@ -622,27 +621,26 @@ var loF=document.fr_agenda;
 			fecha_ini = new Date(fecha_ini[0],(fecha_ini[1]-1),fecha_ini[2]);
 			fecha_fin = new Date(fecha_fin[0],(fecha_fin[1]-1),fecha_fin[2]);
 
-
 			if(!(codigo==events[x].id)){
-				console.log(fecha_ini <= events[x].start && fecha_ini >= events[x].end);
-				console.log(fecha_fin <= events[x].start && fecha_fin >= events[x].end);
-				console.log((events[x].start <= fecha_ini)||(fecha_ini >= events[x].end));
-				console.log((events[x].start <= fecha_fin)||(fecha_fin >= events[x].end));
 
-				if(((events[x].start <= fecha_ini)||(fecha_ini >= events[x].end))||((events[x].start <= fecha_fin)||(fecha_fin >= events[x].end))){
-					console.log(events[x].id+" esta entre las fechas \n"+events[x].start+"\n"+events[x].end);
-					if(events[x].per_caidv == per_caidv){
-						//console.log("caidv "+per_caidv+" ocupada ");
+					
+				if((fecha_ini <= events[x].end && fecha_ini >= events[x].start)||(fecha_fin <= events[x].end && fecha_fin >= events[x].start)){
+					if(events[x].org === org){
+						console.log("organizacion ocupada");
+						return false;
 					}
-					if(events[x].per_emp == per_emp){
-						//console.log("persona  "+per_emp+"  ocupada");
+					if(events[x].per_emp === per_emp){
+						console.log("Responsable empresa ocupado");
+						return false;
 					}
-					if(events[x].org == org){
-						//console.log(org+" ocupada");
-					}						
+					if(events[x].per_caidv === per_caidv){
+						console.log("Responsable CAIDV ocupado");
+						return false;
+					}
 				}
 			}
 		}
+		return true;
 	}
 
 	function fGuardar(){
