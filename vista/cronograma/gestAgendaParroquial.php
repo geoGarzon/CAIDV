@@ -626,15 +626,15 @@ var loF=document.fr_agenda;
 					
 				if((fecha_ini <= events[x].end && fecha_ini >= events[x].start)||(fecha_fin <= events[x].end && fecha_fin >= events[x].start)){
 					if(events[x].org === org){
-						console.log("organizacion ocupada");
+						alert("organizacion ocupada");
 						return false;
 					}
 					if(events[x].per_emp === per_emp){
-						console.log("Responsable empresa ocupado");
+						alert("Responsable empresa ocupado");
 						return false;
 					}
 					if(events[x].per_caidv === per_caidv){
-						console.log("Responsable CAIDV ocupado");
+						alert("Responsable CAIDV ocupado");
 						return false;
 					}
 				}
