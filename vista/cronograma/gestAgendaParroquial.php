@@ -344,7 +344,7 @@ echo utf8_Decode('
 var loF=document.fr_agenda;
 	function cargar(){
 		var lista=document.getElementsByTagName(\'td\');
-		let hoy = new Date().toJSON().slice(0,10);
+		var hoy = new Date().toJSON().slice(0,10);
 		for(var x=0;x<lista.length;x++){
 			if(lista[x].classList.contains(\'fc-day\')){
 				//validacion solo actividades para fechas mayores al dia de hoy
@@ -374,8 +374,8 @@ var loF=document.fr_agenda;
 	}
 	//-------------------------------validacion fecha ----------------------------------------
 	function validarFecha(nodoFechaFin){
-		let fechaFin = nodoFechaFin.value;
-		let fechaInicio = document.querySelector(\'input[name="Fecha_Ini"]\').value;
+		var fechaFin = nodoFechaFin.value;
+		var fechaInicio = document.querySelector(\'input[name="Fecha_Ini"]\').value;
 		if(validate_fechaMayorQue(fechaInicio,fechaFin)){
 			console.log("paso");
 		}else{
@@ -404,8 +404,8 @@ var loF=document.fr_agenda;
 	//-------------------------------fin validacion fecha ------------------------------------
     //-------------------------------validacion de hora ------------------------------------
     function validarHora(){
-    	let horafin = document.querySelector(\'input[name="Hora_Fin"]\').value;
-    	let horaini = document.querySelector(\'input[name="Hora_Ini"]\').value;
+    	var horafin = document.querySelector(\'input[name="Hora_Fin"]\').value;
+    	var horaini = document.querySelector(\'input[name="Hora_Ini"]\').value;
     	if(!validar_horaMayor(horaini,horafin)){
     		document.querySelector(\'input[name="Hora_Fin"]\').value = document.querySelector(\'input[name="Hora_Ini"]\').value;
     		document.querySelector(\'input[name="Fecha_Fin"]\').value = document.querySelector(\'input[name="Fecha_Ini"]\').value;
@@ -456,7 +456,7 @@ var loF=document.fr_agenda;
 		}
 		if(even_estatus==\'C\')
 		{
-			for(let x = 0; x < document.fr_agenda.length; x++){
+			for(var x = 0; x < document.fr_agenda.length; x++){
 				document.fr_agenda[x].disbled=true;
 			}
 		}
@@ -552,19 +552,19 @@ var loF=document.fr_agenda;
 				
 			if(loF.Lugar_Enc.value=="")
 			{
-				console.log("Escriba un lugar para la Actividad.");
+				alert("Escriba un lugar para la Actividad.");
 				loF.Lugar_Enc.focus();
 				vInvalido=1;
 			}
 			if(loF.Hora_Ini.value=="")
 			{
-				console.log("Indique una Hora para la Actividad.");
+				alert("Indique una Hora para la Actividad.");
 				loF.Hora_Ini.focus();
 				vInvalido=1;
 			}
 			if(loF.Fecha_Ini.value=="")
 			{
-				console.log("Indique una Fecha para la Actividad.");
+				calert("Indique una Fecha para la Actividad.");
 				loF.Fecha_Ini.focus();
 				vInvalido=1;
 			}
@@ -574,7 +574,7 @@ var loF=document.fr_agenda;
 
 					if(loF.CodigoTipoActividad.value=="-")
 					{
-						console.log("Seleccione Tipo de Actividad.");
+						alert("Seleccione Tipo de Actividad.");
 						loF.CodigoTipoActividad.focus();
 						vInvalido=1;
 					}
@@ -582,7 +582,7 @@ var loF=document.fr_agenda;
 				
 					if(loF.Nombre.value=="")
 					{
-						console.log("Escriba un Nombre para la Actividad.");
+						alert("Escriba un Nombre para la Actividad.");
 						loF.Nombre.focus();
 						vInvalido=1;
 					}
@@ -591,14 +591,14 @@ var loF=document.fr_agenda;
 			    case \'0\':
 			       	if(loF.Actividad.value=="-")
 					{
-						console.log("Seleccione una Actividad.");
+						alert("Seleccione una Actividad.");
 						loF.Actividad.focus();
 						vInvalido=1;
 					}
 			    break;
 			}
-			if(validarEmp()){
-				
+			if(!validarEmp()){
+				vInvalido=1;
 			}			
 			if (vInvalido==0)
 			{
@@ -609,21 +609,20 @@ var loF=document.fr_agenda;
 	}
 
 	function validarEmp(){
-		for(let x = 0; x < events.length; x++){
-			let org = document.getElementsByName(\'Organizacion\')[0].value;
-			let per_emp = document.getElementsByName(\'PersonaEncargada\')[0].value;
-			let per_caidv = document.getElementsByName(\'RepresentanteCAIDV\')[0].value;
-			let codigo = document.getElementsByName(\'Codigo\')[0].value
+		for(var x = 0; x < events.length; x++){
+			var org = document.getElementsByName(\'Organizacion\')[0].value;
+			var per_emp = document.getElementsByName(\'PersonaEncargada\')[0].value;
+			var per_caidv = document.getElementsByName(\'RepresentanteCAIDV\')[0].value;
+			var codigo = document.getElementsByName(\'Codigo\')[0].value
 			//fechas
-			let fecha_ini = document.getElementsByName(\'Fecha_Ini\')[0].value.split("-");
-			let fecha_fin = document.getElementsByName(\'Fecha_Fin\')[0].value.split("-");
+			var fecha_ini = document.getElementsByName(\'Fecha_Ini\')[0].value.split("-");
+			var fecha_fin = document.getElementsByName(\'Fecha_Fin\')[0].value.split("-");
 
 			fecha_ini = new Date(fecha_ini[0],(fecha_ini[1]-1),fecha_ini[2]);
 			fecha_fin = new Date(fecha_fin[0],(fecha_fin[1]-1),fecha_fin[2]);
 
 			if(!(codigo==events[x].id)){
 
-					
 				if((fecha_ini <= events[x].end && fecha_ini >= events[x].start)||(fecha_fin <= events[x].end && fecha_fin >= events[x].start)){
 					if(events[x].org === org){
 						alert("organizacion ocupada");
@@ -647,7 +646,6 @@ var loF=document.fr_agenda;
 	
 		if(fbValidar())
 			{
-
 				var $forme = $("#fr_agenda");
 					$.ajax(
 					{
