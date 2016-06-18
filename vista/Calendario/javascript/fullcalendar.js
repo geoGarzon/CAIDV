@@ -5349,7 +5349,7 @@ function DayEventRenderer() {
 
 		
 		var dia = parseFecha(event.start.getDate());
-		var mes = parseFecha(event.start.getMonth());
+		var mes = parseFecha(event.start.getMonth()+1);
 		var ano = event.start.getFullYear();
 		if (url) {
 			html += "<a href='" + htmlEscape(url) + "'";
@@ -5370,7 +5370,7 @@ function DayEventRenderer() {
 				"'";
 		var fin=eventEnd(event);
 		var dia = parseFecha(fin.getDate());
-		var mes = parseFecha(fin.getMonth());
+		var mes = parseFecha(fin.getMonth()+1);
 		var ano = fin.getFullYear();
 		html +=
 				"finaliza=" +
