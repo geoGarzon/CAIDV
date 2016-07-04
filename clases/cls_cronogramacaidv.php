@@ -13,6 +13,7 @@ class  cls_cronogramacaidv extends  clsDatos{
 		{
 		}
 		public function Cargar($tabla){
+			$this->f_VerificarEventos();
 			$lii=0;
 			$ls_Sql="SELECT 
 			tage.codigoAgenda,
@@ -108,5 +109,38 @@ class  cls_cronogramacaidv extends  clsDatos{
 					print('<span id="hora">Fecha: '.date('d-m-Y').'</span>');
 				echo "</div>";
 		echo"</div>";
+	}
+	public function f_VerificarEventos(){
+		echo '<br><br>entro';
+		$ls_Sql = "SELECT * FROM tagenda WHERE Estatus <> 'A'";
+		$this->fpConectar();																								
+			$lr_Tabla=$this->frFiltro($ls_Sql);																			
+			while($la_Tupla=$this->faProximo($lr_Tabla)){		
+				$Codigo=$la_Tupla["codigoAgenda"];
+				$Fecha_Ini=$la_Tupla["fecha_act_Inicio"];
+				$Fecha_Fin=$la_Tupla["fecha_act_Fin"];
+				$status=$la_Tupla["Estatus"];
+				//comparo fechas contra la actual
+				$fecha_actual = strtotime(date("d-m-Y H:i:00",time()));
+				$Fecha_Ini = strtotime($Fecha_Ini." 00:00:00");
+				$Fecha_Ini = strtotime($Fecha_Fin." 00:00:00");
+				if($Fecha_Ini <= $fecha_actual){
+					if($Fecha_Fin < $fecha_actual){
+						//completada
+						if($estatus != 'C'){
+							$ls_Sql = "UPDATE tagenda SET Estatus = 'C' WHERE codigoAgenda = '".$Codigo."'";
+							$lb_Hecho = $this->fbEjecutar($ls_Sql);
+						}
+					}else{
+						//en ejecucion
+						if($estatus != 'E'){
+							$ls_Sql = "UPDATE tagenda SET Estatus = 'E' WHERE codigoAgenda = '".$Codigo."'";
+							$lb_Hecho = $this->fbEjecutar($ls_Sql);
+						}
+					}
+				}
+			}		
+			$this->fpCierraFiltro($lr_Tabla);
+			$this->fpDesconectar();
 	}
 }

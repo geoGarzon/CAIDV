@@ -13,6 +13,7 @@ class  cls_Calendario extends  clsDatos{
 		{
 		}
 		public function Cargar($tabla){
+			$this->f_VerificarEventos();
 			$lii=0;
 			$ls_Sql="SELECT 
 			tage.codigoAgenda,
@@ -34,7 +35,8 @@ class  cls_Calendario extends  clsDatos{
 			tacti.nombreact,
 			tacti.tipo_actividad
 			FROM ".$tabla." AS tage 
-			LEFT JOIN tactividad AS tacti ON tage.idFcodigo_actividad = tacti.codigoActividad";							
+			LEFT JOIN tactividad AS tacti ON tage.idFcodigo_actividad = tacti.codigoActividad";
+			$ls_Sql.=" where tage.Estatus <> 'A'";							
 			$this->fpConectar();																								
 			$lr_Tabla=$this->frFiltro($ls_Sql);																			
 			while($la_Tupla=$this->faProximo($lr_Tabla)){		
@@ -61,7 +63,6 @@ class  cls_Calendario extends  clsDatos{
 			}		
 			$this->fpCierraFiltro($lr_Tabla);
 			$this->fpDesconectar();
-
 		}
 		public function eventos(){
 			for($lix=0;$lix<count($this->aa_Eventos);$lix++){
@@ -93,7 +94,38 @@ class  cls_Calendario extends  clsDatos{
 				}
 			}
 		}
-		
+		public function f_VerificarEventos(){
+		$ls_Sql = "SELECT * FROM tagenda WHERE Estatus <> 'A'";
+		$this->fpConectar();																								
+			$lr_Tabla=$this->frFiltro($ls_Sql);																			
+			while($la_Tupla=$this->faProximo($lr_Tabla)){		
+				$Codigo=$la_Tupla["codigoagenda"];
+				$Fecha_Ini=$la_Tupla["fecha_act_Inicio"];
+				$Fecha_Fin=$la_Tupla["fecha_act_Fin"];
+				$estatus=$la_Tupla["Estatus"];
+				//comparo fechas contra la actual
+				$fecha_actual = strtotime(date("d-m-Y H:i:00",time()));
+				$Fecha_Ini = strtotime($Fecha_Ini." 00:00:00");
+				$Fecha_Fin = strtotime($Fecha_Fin." 00:00:00");
+				if($Fecha_Ini <= $fecha_actual){
+					if($Fecha_Fin < $fecha_actual){
+						//completada
+						if($estatus != 'C'){
+							$ls_Sql = "UPDATE tagenda SET Estatus = 'C' WHERE codigoAgenda = '".$Codigo."'";
+							$lb_Hecho = $this->fbEjecutar($ls_Sql);
+						}
+					}else{
+						//en ejecucion
+						if($estatus != 'E'){
+							$ls_Sql = "UPDATE tagenda SET Estatus = 'E' WHERE codigoAgenda = '".$Codigo."'";
+							$lb_Hecho = $this->fbEjecutar($ls_Sql);
+						}
+					}
+				}
+			}		
+			$this->fpCierraFiltro($lr_Tabla);
+			$this->fpDesconectar();
+	}
 		public function f_Cabecera(){
 		echo "<div ddt>
 				<input type='button' id='atras' title='Atras' onclick='window.history.back();'>

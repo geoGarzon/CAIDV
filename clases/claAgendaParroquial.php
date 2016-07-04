@@ -127,7 +127,7 @@ class  claAgendaParroquial extends  clsDatos{
 			}
 			$lbHecho=false;																									
 			$lsSql="UPDATE tagenda SET 
-				Estatus='".$variControl."' 
+				Estatus='A' 
 				WHERE  codigoagenda='".$this->aa_Form['Codigo']."'";
 
 				$this->fpConectar();	
