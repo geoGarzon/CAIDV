@@ -141,7 +141,12 @@ div[Cabecera] p{
 	color: rgb(24, 75, 124);
 }
 
-
+span#estado{
+	color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
 </style>
 </head>
 		<body onload="cargar();">
@@ -297,16 +302,11 @@ echo utf8_Decode('
 											     <textarea name="Lugar_Enc"></textarea>
 											 <br>
 									</td>
-
 									<td colspan="2">
-											<label>Estado </label>									
-											     <select name="estado" >
-											     	<option value="-"> Seleccione un estado</option>
-											     	<option value="P">Planificado</option>
-											     	<option value="A">Anulado</option>
-											     	<option value="C">Completado</option>
-											     	<option value="E">En Ejecucion</option>
-											     </select>
+											<label>Estado Actual</label>
+											<br>
+											     <span id="estado"></span>
+											 <br>
 									</td>
 
 								</tr>
@@ -321,6 +321,11 @@ echo utf8_Decode('
 										<input type="button" onclick="fGuardar();" value="Guardar"/>
 
 									</td>
+									<td>
+										<input type="button" onclick="f_Anular();" id="anular" value="Anular"/>
+
+									</td>
+									
 									
 								</tr>
 							</table>
@@ -439,7 +444,7 @@ var loF=document.fr_agenda;
 		console.log("linea");
 		obj.style.transition = \'all 1s ease-out 0.5s\';	
 		obj.style.display=\'block\';
-		obj.style.marginTop = \'calc(15%)\';
+		obj.style.marginTop = \'calc(15% - 130px)\';
 		obj.style.marginLeft = \'calc(15%)\';	
 		loF.txtOperacion.value="incluir";
 		loF.ModoActividad.value=\'1\';
@@ -464,42 +469,7 @@ var loF=document.fr_agenda;
 		{
 			//document.getElementsByName(\'Eliminar\')[0].value=\'Reactivar\';
 		}
-
-		var a = fechaInicio.substring(0,4);
-		var m = fechaInicio.substring(5,7);
-		var d = fechaInicio.substring(8,10);
-		if(codigo){
-			if(m==\'00\'){
-				m=\'01\';
-			}else{
-				m=parseInt(m)+1;
-			}
-		}
-		if(d.length==1){
-			d=\'0\'+d;
-		}
-		if(m.toString().length==1){
-			m=\'0\'+m;
-		}
-		document.getElementsByName(\'Fecha_Ini\')[0].value=a+\'-\'+m+\'-\'+d;
-		var a = fechaFin.substring(0,4);
-		var m = fechaFin.substring(5,7);
-		var d = fechaFin.substring(8,10);
-		if(codigo){
-			if(m==\'00\'){
-				m=\'01\';
-
-			}else{
-				m=parseInt(m)+1;
-			}
-		}
-		if(d.length==1){
-			d=\'0\'+d;
-		}
-		if(m.toString().length==1){
-			m=\'0\'+m;
-		}
-		document.getElementsByName(\'Fecha_Ini\')[0].value=objeto.getAttribute("inicia");
+		document.getElementsByName(\'Fecha_Ini\')[0].value=fechaInicio;
 		document.getElementsByName(\'Fecha_Fin\')[0].value=objeto.getAttribute("finaliza");
 		document.getElementsByName(\'Codigo\')[0].value=codigo;
 		document.getElementsByName(\'Actividad\')[0].value=Actividad;
@@ -510,12 +480,40 @@ var loF=document.fr_agenda;
 		document.getElementsByName(\'CodigoTipoActividad\')[0].value=tipo_acti;
 		document.getElementsByName(\'EstatusAgenda\')[0].value=even_estatus;
 		document.getElementsByName(\'Organizacion\')[0].value=objeto.getAttribute("org");
-		document.getElementsByName(\'estado\')[0].value=objeto.getAttribute("estado");
 		document.getElementsByName(\'PersonaEncargada\')[0].value=objeto.getAttribute("per_emp");
 		document.getElementsByName(\'RepresentanteCAIDV\')[0].value=objeto.getAttribute("per_caidv");
 		loF.Actividad.focus();
+		if(objeto.nodeName.toLowerCase() != "div"){
+			document.getElementsByName(\'Fecha_Ini\')[0].disabled = true;
+			document.getElementById("anular").disabled=true;
+			llenarEstado("P");
+		}else{
+			document.getElementById("anular").disabled=false;
+			activarLosCampos();
+			llenarEstado(objeto.getAttribute("estado"));
+		}
 	}
-
+	function llenarEstado(estado,color){
+		var display = document.getElementById("estado");
+		switch (estado) {
+			case "P":
+				display.textContent = "Planificado";
+				display.style.backgroundColor = "#4CAF50"; 
+				break;
+			case "E":
+				display.textContent = "En Ejecucion";
+				display.style.backgroundColor = "#FF9800"; 
+				break;
+			case "C":
+				display.textContent = "Completado";
+				display.style.backgroundColor = "#2196F3"; 
+				break;
+			case "A":
+				display.textContent = "Anulado";
+				display.style.backgroundColor = "#607D8B"; 
+				break;
+		}
+	}
 	function fpDespliegaActividades()
 	{
 		loF.Actividad.value=\'-\';
@@ -643,7 +641,7 @@ var loF=document.fr_agenda;
 	}
 
 	function fGuardar(){
-	
+		activarLosCampos();
 		if(fbValidar())
 			{
 				var $forme = $("#fr_agenda");
@@ -666,6 +664,7 @@ var loF=document.fr_agenda;
 							{
 
 								console.log("Registro incluido con exito.");
+								desactivarLosCampos();
 								setTimeout(function(){document.location.href = "?vista=cronograma/gestAgendaParroquial"; }, 1000);
 								
 							}
@@ -679,12 +678,46 @@ var loF=document.fr_agenda;
 							{
 
 								console.log("Registro modificado con exito.");
+								desactivarLosCampos();
 								setTimeout(function(){ document.location.href = "?vista=cronograma/gestAgendaParroquial"; }, 1000);
 
 							}
 						}
 					});
 			}
+	}
+	function activarLosCampos(){
+		document.getElementsByName(\'Fecha_Ini\')[0].disabled = false;
+		document.getElementsByName(\'Fecha_Fin\')[0].disabled = false;
+		document.getElementsByName(\'Codigo\')[0].disabled = false;
+		document.getElementsByName(\'Actividad\')[0].disabled = false;
+		document.getElementsByName(\'Hora_Ini\')[0].disabled = false;
+		document.getElementsByName(\'Hora_Fin\')[0].disabled = false;
+		document.getElementsByName(\'Lugar_Enc\')[0].disabled = false;
+		document.getElementsByName(\'Nombre\')[0].disabled = false;
+		document.getElementsByName(\'CodigoTipoActividad\')[0].disabled = false;
+		document.getElementsByName(\'EstatusAgenda\')[0].disabled = false;
+		document.getElementsByName(\'Organizacion\')[0].disabled = false;
+		document.getElementsByName(\'PersonaEncargada\')[0].disabled = false;
+		document.getElementsByName(\'RepresentanteCAIDV\')[0].disabled = false;
+	}
+	function desactivarLosCampos(){
+		document.getElementsByName(\'Fecha_Ini\')[0].disabled = true;
+		document.getElementsByName(\'Fecha_Fin\')[0].disabled = true;
+		document.getElementsByName(\'Codigo\')[0].disabled = true;
+		document.getElementsByName(\'Actividad\')[0].disabled = true;
+		document.getElementsByName(\'Hora_Ini\')[0].disabled = true;
+		document.getElementsByName(\'Hora_Fin\')[0].disabled = true;
+		document.getElementsByName(\'Lugar_Enc\')[0].disabled = true;
+		document.getElementsByName(\'Nombre\')[0].disabled = true;
+		document.getElementsByName(\'CodigoTipoActividad\')[0].disabled = true;
+		document.getElementsByName(\'EstatusAgenda\')[0].disabled = true;
+		document.getElementsByName(\'Organizacion\')[0].disabled = true;
+		document.getElementsByName(\'PersonaEncargada\')[0].disabled = true;
+		document.getElementsByName(\'RepresentanteCAIDV\')[0].disabled = true;
+	}
+	function f_Anular(){
+		f_Eliminar();
 	}
 		function f_Eliminar(){
 			if (confirm(\'Desea Continuar con la operación?\'))
